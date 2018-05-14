@@ -17,6 +17,7 @@ view: aircraft_models {
   }
 
   dimension: aircraft_type_id {
+    primary_key: yes
     type: number
     sql: ${TABLE}.aircraft_type_id ;;
   }

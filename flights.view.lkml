@@ -63,6 +63,11 @@ view: flights {
     type: string
     sql: ${TABLE}.diverted ;;
   }
+  dimension: location {
+    type: location
+    sql_latitude: ${airports.latitude} ;;
+    sql_longitude: ${airports.longitude} ;;
+  }
 
   dimension: flight_num {
     type: string
@@ -75,6 +80,7 @@ view: flights {
   }
 
   dimension: id2 {
+    primary_key: yes
     type: number
     sql: ${TABLE}.id2 ;;
   }
@@ -102,5 +108,10 @@ view: flights {
   measure: count {
     type: count
     drill_fields: []
+  }
+
+  measure: total_distamce {
+    type: sum
+    sql: ${distance} ;;
   }
 }

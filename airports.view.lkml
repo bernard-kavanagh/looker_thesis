@@ -103,14 +103,22 @@ view: airports {
   }
 
   dimension: latitude {
+    hidden: yes
     type: number
     sql: ${TABLE}.latitude ;;
   }
 
   dimension: longitude {
+    hidden: yes
     type: number
     sql: ${TABLE}.longitude ;;
   }
+  dimension: airport_location {
+    type: location
+    sql_latitude: ${latitude};;
+    sql_longitude: ${longitude} ;;
+  }
+
 
   dimension: major {
     type: string

@@ -106,6 +106,11 @@ view: accidents {
     type: string
     sql: ${TABLE}.longitude ;;
   }
+  dimension: geo_location {
+    type: location
+    sql_latitude: ${latitude};;
+    sql_longitude: ${longitude} ;;
+  }
 
   dimension: make {
     type: string
@@ -118,7 +123,7 @@ view: accidents {
   }
 
   dimension: number_of_engines {
-    type: string
+    type: number
     sql: ${TABLE}.number_of_engines ;;
   }
 
@@ -129,7 +134,7 @@ view: accidents {
 
   dimension: number_of_minor_injuries {
     type: string
-    sql: ${TABLE}.number_of_minor_injuries ;;
+    sql:  ${TABLE}.number_of_minor_injuries ;;
   }
 
   dimension: number_of_serious_injuries {
@@ -184,5 +189,14 @@ view: accidents {
   measure: count {
     type: count
     drill_fields: [id, airport_name]
+  }
+
+  measure: total_fatalities {
+    type: sum_distinct
+    sql: CAST(${number_of_fatalities} AS INT64) ;;
+  }
+  measure: total_injuries {
+    type: sum
+    sql: CAST(${number_of_minor_injuries} AS INT64) + CAST(${number_of_serious_injuries} AS INT64)  ;;
   }
 }

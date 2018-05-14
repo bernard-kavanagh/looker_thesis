@@ -138,6 +138,7 @@ view: aircraft {
   }
 
   dimension: tail_num {
+    primary_key: yes
     type: string
     sql: ${TABLE}.tail_num ;;
   }

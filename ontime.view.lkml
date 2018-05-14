@@ -10,6 +10,7 @@ view: ontime {
     type: time
     timeframes: [
       raw,
+      minute,
       time,
       date,
       week,
@@ -39,10 +40,15 @@ view: ontime {
     type: time
     timeframes: [
       raw,
+      minute,
       time,
+      hour_of_day,
+      hour2,
       date,
+      day_of_week,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
@@ -75,6 +81,7 @@ view: ontime {
   }
 
   dimension: id2 {
+    primary_key: yes
     type: number
     sql: ${TABLE}.id2 ;;
   }
@@ -102,5 +109,13 @@ view: ontime {
   measure: count {
     type: count
     drill_fields: []
+  }
+  measure: departure_delay {
+    type: sum
+    sql: ${dep_delay} ;;
+  }
+  dimension: idle_mins {
+    type: number
+    sql: TIMESTAMP_DIFF(${arr_raw}, ${dep_raw}, MINUTE);;
   }
 }
