@@ -41,12 +41,21 @@ view: flights_by_day {
     sql: ${TABLE}.dep_delay ;;
   }
 
-  measure:  count_delayed_flights{
+#   measure:  count_delayed_flights{
+#     type: count_distinct
+#     sql: ${dep_delay} ;;
+#     filters: {
+#       field: dep_delay
+#       value: "> 0"
+#     }
+#   }
+
+  measure: count_delayed_flights {
     type: count_distinct
-    sql: ${dep_delay} ;;
+    sql: CONCAT(${flight_num}, CAST(${id2} AS STRING) ) ;;
     filters: {
-      field: dep_delay
-      value: "> 0"
+      field: arr_delay
+      value: "> 15"
     }
   }
 
