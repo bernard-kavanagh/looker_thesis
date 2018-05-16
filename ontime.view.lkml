@@ -111,7 +111,7 @@ view: ontime {
     drill_fields: []
   }
   measure: departure_delay {
-    type: sum
+    type: number
     sql: ${dep_delay} ;;
   }
   dimension: idle_mins {

@@ -116,9 +116,13 @@ explore: flights {
     relationship: many_to_one
     sql_on: ${flights.id2} = ${flights_by_day.id2} ;;
   }
-  join: airports{}
-
+  join: airports {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${flights.origin} = ${airports.code} ;;
+  }
 }
+
 explore: routes {
   from: airports
   join: flights_incoming {

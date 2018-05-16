@@ -6,6 +6,12 @@ view: flights_by_day {
     sql: ${TABLE}.arr_delay ;;
   }
 
+  measure: sum_arr_delay {
+    label: "Sum of arrival delay"
+    type: sum
+    sql: ${arr_delay} ;;
+  }
+
   dimension_group: arr {
     type: time
     timeframes: [
@@ -33,6 +39,15 @@ view: flights_by_day {
   dimension: dep_delay {
     type: number
     sql: ${TABLE}.dep_delay ;;
+  }
+
+  measure:  count_delayed_flights{
+    type: count_distinct
+    sql: ${dep_delay} ;;
+    filters: {
+      field: dep_delay
+      value: "> 0"
+    }
   }
 
   dimension_group: dep {
