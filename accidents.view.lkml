@@ -22,6 +22,7 @@ view: accidents {
     suggest_dimension: State
     type: string
     full_suggestions: yes
+    suggest_persist_for: "0 seconds"
   }
 
   dimension: id {
