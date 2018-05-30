@@ -1,6 +1,23 @@
 view: accidents {
   sql_table_name: flightstats.accidents ;;
 
+
+  parameter: airline {
+    type: string
+    full_suggestions: yes
+    allowed_value: { value: "American Airlines"}
+    allowed_value: { value: "United Airlines  "}
+    allowed_value: { value: "Delta Air Lines  "}
+    allowed_value: { value: "Southwest Airlines"}
+    allowed_value: { value: "Continental Airlines"}
+    allowed_value: { value: "Northwest Airlines"}
+    allowed_value: { value: "US Airways "}
+    allowed_value: { value: "Atlantic Southeast Airlines"}
+    allowed_value: { value: "US Airways"}
+    allowed_value: { value: "Alaska Airlines"}
+    allowed_value: { value: "Jetblue Airways"}
+  }
+
   dimension: id {
     primary_key: yes
     type: number
