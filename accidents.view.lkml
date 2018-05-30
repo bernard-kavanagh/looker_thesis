@@ -18,6 +18,12 @@ view: accidents {
     allowed_value: { value: "Jetblue Airways"}
   }
 
+  parameter: State {
+    suggest_dimension: State
+    type: string
+    full_suggestions: yes
+  }
+
   dimension: id {
     primary_key: yes
     type: number
