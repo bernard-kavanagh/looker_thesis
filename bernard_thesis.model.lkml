@@ -142,6 +142,10 @@ explore: routes {
 
 explore: sessionsation {}
 
+explore: peer_to_peer_sessionisation {
+  label: "Industry Insights"
+}
+
 explore: flights_by_day {}
 
 explore: ontime {}
