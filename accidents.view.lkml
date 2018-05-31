@@ -212,7 +212,7 @@ view: accidents {
 
   measure: count {
     type: count
-    drill_fields: [id, airport_name]
+    drill_fields: [id, airport_name, total_injuries, total_fatalities]
   }
 
   measure: total_fatalities {

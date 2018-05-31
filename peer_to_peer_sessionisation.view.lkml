@@ -83,20 +83,20 @@ order by dep_time) foo
 
   measure: share_of_idle_time_airline {
     type: number
-    description: "This item sales over all idle times for same airline"
-    sql: 100.0 * ${total_idle_time_this_tail_num}*1.0 / nullif(${total_idle_time_this_tail_num},0);;
+    description: "This planes idle time over all idle times for same airline"
+    sql: ${total_idle_time_this_tail_num} / nullif(${total_idle_time_this_tail_num},0);;
     drill_fields: [detail*]
     }
 
   measure: share_of_wallet_within_company {
-    description: "This item sales over all sales across website"
+    description: "This item idle time over all idle time across website"
     type: number
     sql: 100.0 *  ${total_idle_time_this_tail_num}*1.0 / nullif(${total_idle_time},0);;
     drill_fields: [detail*]
     }
 
   measure: share_of_wallet_brand_within_company {
-    description: "This brand's sales over all sales across website"
+    description: "This brand's idle time over all idle time across website"
     type: number
     sql: 100.0 *  ${total_idle_time_this_airline}*1.0 / nullif(${total_idle_time},0);;
     drill_fields: [detail*]
