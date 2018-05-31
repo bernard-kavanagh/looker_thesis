@@ -1,6 +1,6 @@
 view: peer_to_peer_sessionisation {
   derived_table: {
-#     persist_for: "48 hours"
+    persist_for: "48 hours"
     sql: WITH lag AS
         (SELECT
                   logs.carrier
@@ -36,7 +36,7 @@ order by dep_time) foo
         FROM `lag`
         WHERE
         (lag.idle_time > 120 OR lag.idle_time IS NULL)
-        AND {% condition tail_number %} peer_to_peer_sessionisation.tail_num {% endcondition %}
+        AND {% condition tail_number %} tail_num {% endcondition %}
         ORDER BY session_start
  ;;
   }
@@ -50,6 +50,57 @@ order by dep_time) foo
     type: string
     full_suggestions: yes
   }
+
+   dimension: comparison {
+    type: string
+    sql:
+      CASE
+      WHEN  ${tail_num} = ${tail_number}
+      THEN '(1) '||${tail_num}
+      WHEN  ${carrier_name} = ${air_carrier}
+      THEN '(2) Rest of '||${carrier_name}
+      ELSE '(3) Rest Of Population'
+      END;;
+    }
+
+  measure: total_idle_time {
+    type: sum
+    sql: ${idle_time} ;;
+    drill_fields: [detail*]
+    }
+
+  measure: total_idle_time_this_tail_num {
+    type: sum
+    sql: ${idle_time};;
+    drill_fields: [detail*]
+    }
+
+  measure: total_idle_time_this_airline {
+    type: sum
+    sql: ${idle_time};;
+    drill_fields: [detail*]
+    }
+
+  measure: share_of_idle_time_airline {
+    type: number
+    description: "This item sales over all idle times for same airline"
+    sql: 100.0 * ${total_idle_time_this_tail_num}*1.0 / nullif(${total_idle_time_this_tail_num},0);;
+    drill_fields: [detail*]
+    }
+
+  measure: share_of_wallet_within_company {
+    description: "This item sales over all sales across website"
+    type: number
+    sql: 100.0 *  ${total_idle_time_this_tail_num}*1.0 / nullif(${total_idle_time},0);;
+    drill_fields: [detail*]
+    }
+
+  measure: share_of_wallet_brand_within_company {
+    description: "This brand's sales over all sales across website"
+    type: number
+    sql: 100.0 *  ${total_idle_time_this_airline}*1.0 / nullif(${total_idle_time},0);;
+    drill_fields: [detail*]
+    }
 
   measure: count {
     type: count
