@@ -101,10 +101,10 @@ explore: airports {
 
 explore: delays {
   from: airports
-  join: ontime {
+  join: flights_by_day {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${delays.code} = ${ontime.origin} ;;
+    sql_on: ${delays.code} = ${flights_by_day.origin} ;;
   }
 }
 

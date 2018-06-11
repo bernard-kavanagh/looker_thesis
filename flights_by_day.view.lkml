@@ -7,10 +7,22 @@ view: flights_by_day {
   }
 
   measure: sum_arr_delay {
-    label: "Sum of arrival delay"
+    label: "Total arrival delay"
     type: sum
     sql: ${arr_delay} ;;
   }
+  measure: sum_dep_delay {
+    label: "Total departure delay"
+    type: sum
+    sql: ${dep_delay} ;;
+  }
+  measure: average_delay {
+    label: "Average departure delay"
+    type: average
+    sql: ${dep_delay} ;;
+    value_format: "0.##"
+  }
+
 
   dimension_group: arr {
     type: time
@@ -67,6 +79,7 @@ view: flights_by_day {
       date,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
