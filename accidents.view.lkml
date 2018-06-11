@@ -3,6 +3,7 @@ view: accidents {
 
 
   parameter: airline {
+    required_fields: [air_carrier]
     type: string
     full_suggestions: yes
     allowed_value: { value: "American Airlines"}
@@ -19,7 +20,7 @@ view: accidents {
   }
 
   parameter: State {
-    suggest_dimension: State
+    required_fields: [State]
     type: string
     full_suggestions: yes
     suggest_persist_for: "0 seconds"

@@ -144,8 +144,54 @@ explore: sessionsation {}
 
 explore: peer_to_peer_sessionisation {
   label: "Industry Insights"
+  join: flights_by_day {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${peer_to_peer_sessionisation.id2} = ${flights_by_day.id2} ;;
+  }
 }
+
+explore: events_sessionised  {}
 
 explore: flights_by_day {}
 
 explore: ontime {}
+
+explore: bq_gsod_1999 {
+  label: "Weather"
+  join: bq_gsod_2000 {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2000.station_id};;
+  }
+  join: bq_gsod_2001 {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2001.station_id};;
+  }
+  join: bq_gsod_2002 {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2002.station_id};;
+  }
+  join: bq_gsod_2003 {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2003.station_id};;
+  }
+  join: bq_gsod_2004 {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2004.station_id};;
+  }
+  join: bq_gsod_2005 {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2005.station_id};;
+  }
+  join: station_locations{
+    type: left_outer
+    relationship: one_to_one
+    sql_on:  ${bq_gsod_1999.station_id} = ${station_locations.station_id};;
+}
+}
