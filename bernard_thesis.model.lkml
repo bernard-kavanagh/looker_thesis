@@ -14,7 +14,10 @@ datagroup: bernard_thesis_default_datagroup {
 persist_with: bernard_thesis_default_datagroup
 
 explore: accidents {
-  sql_always_where: ${event_year}> 1982 AND ${air_carrier} IS NOT NULL;;
+  sql_always_where: ${event_year}> 1982 AND ${air_carrier} IS NOT NULL AND
+  ((((TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) >= (TIMESTAMP('2000-01-01 00:00:00'))
+  AND (TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) < (TIMESTAMP('2012-01-01 00:00:00')))))
+  AND (name LIKE '%AIRPORT%');;
   join: aircraft {
     type: left_outer
     relationship: one_to_one
@@ -45,6 +48,11 @@ explore: accidents {
     relationship: one_to_one
     sql_on: ${airports.code} = ${flights.origin} ;;
 }
+  join: weather_flattened {
+    type: full_outer
+    relationship: one_to_one
+    sql_on: ${accidents.event_date} = ${weather_flattened.weather_date} AND ${airports.state};;
+  }
 }
 explore: aircraft {
   join: ontime {
@@ -157,5 +165,8 @@ explore: ontime {}
 
 explore: weather_flattened {
   label: "Weather"
-
+  sql_always_where:
+  ((((TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) >= (TIMESTAMP('2000-01-01 00:00:00'))
+  AND (TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) < (TIMESTAMP('2012-01-01 00:00:00')))))
+  AND (name LIKE '%AIRPORT%');;
 }
