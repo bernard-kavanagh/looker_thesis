@@ -14,7 +14,7 @@ datagroup: bernard_thesis_default_datagroup {
 persist_with: bernard_thesis_default_datagroup
 
 explore: accidents {
-  sql_always_where: ${event_year}> 1982 ;;
+  sql_always_where: ${event_year}> 1982 AND ${air_carrier} IS NOT NULL;;
   join: aircraft {
     type: left_outer
     relationship: one_to_one
@@ -155,41 +155,7 @@ explore: flights_by_day {}
 
 explore: ontime {}
 
-explore: bq_gsod_1999 {
+explore: weather_flattened {
   label: "Weather"
-  join: bq_gsod_2000 {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2000.station_id};;
-  }
-  join: bq_gsod_2001 {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2001.station_id};;
-  }
-  join: bq_gsod_2002 {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2002.station_id};;
-  }
-  join: bq_gsod_2003 {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2003.station_id};;
-  }
-  join: bq_gsod_2004 {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2004.station_id};;
-  }
-  join: bq_gsod_2005 {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${bq_gsod_1999.station_id} = ${bq_gsod_2005.station_id};;
-  }
-  join: station_locations{
-    type: left_outer
-    relationship: one_to_one
-    sql_on:  ${bq_gsod_1999.station_id} = ${station_locations.station_id};;
-}
+
 }

@@ -14,7 +14,7 @@ view: station_locations {
                s.end,
                g.stn  AS stn
 FROM   `fh-bigquery.weather_gsod.stations2` AS s
-       INNER JOIN `bigquery-public-data.noaa_gsod.gsod1999` AS g
+       INNER JOIN `bigquery-public-data.noaa_gsod.gsod*` AS g
                ON g.wban = s.wban
                   AND g.stn = s.usaf
 WHERE  country = 'US'

@@ -1,6 +1,45 @@
-view: bq_gsod_2000 {
-  sql_table_name: `bigquery-public-data.noaa_gsod.gsod2000` ;;
-
+view: weather_flattened {
+  derived_table: {
+    persist_for: "24 hours"
+    sql: SELECT DISTINCT( usaf ),
+                s.wban,
+                g.wban AS gwban,
+                NAME,
+                country,
+                state,
+                icao,
+                lat,
+                lon,
+                elev,
+                begin,
+                s.END,
+                g.stn AS stn,
+                year,
+                mo,
+                da,
+                wdsp,
+                dewp,
+                flag_prcp,
+                mxpsd,
+                gust,
+                visib,
+                rain_drizzle,
+                fog,
+                hail,
+                snow_ice_pellets,
+                thunder,
+                tornado_funnel_cloud,
+                slp,
+                sndp,
+                stp,
+                temp
+FROM            `fh-bigquery.weather_gsod.stations2`     AS s
+INNER JOIN      `bigquery-public-data.noaa_gsod.gsod20*` AS g
+ON              g.wban = s.wban
+AND             g.stn = s.usaf
+WHERE           country = 'US'
+ ;;
+  }
   dimension: station_id {
     type: string
     sql: CASE WHEN ${wban} = '99999' THEN ${station} ELSE ${wban} END;;
@@ -195,15 +234,77 @@ view: bq_gsod_2000 {
     value_format_name: decimal_2
   }
 
-
-
-
-  ## Unused Fields
-
   measure: count {
     type: count
-
+    drill_fields: [detail*]
   }
+
+  dimension: usaf {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.usaf ;;
+  }
+
+  dimension: gwban {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.gwban ;;
+  }
+
+  dimension: name {
+    type: string
+    sql: ${TABLE}.name ;;
+  }
+
+  dimension: country {
+    type: string
+    sql: ${TABLE}.country ;;
+  }
+
+  dimension: state {
+    type: string
+    sql: ${TABLE}.state ;;
+  }
+
+  dimension: icao {
+    type: string
+    sql: ${TABLE}.icao ;;
+  }
+
+  dimension: lat {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.lat ;;
+  }
+
+  dimension: lon {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.lon ;;
+  }
+
+  dimension: geolocation {
+    type: location
+    sql_latitude: ${lat} ;;
+    sql_longitude: ${lon} ;;
+  }
+
+  dimension: elev {
+    type: string
+    sql: ${TABLE}.elev ;;
+  }
+
+  dimension: begin {
+    type: string
+    sql: ${TABLE}.begin ;;
+  }
+
+  dimension: end {
+    type: string
+    sql: ${TABLE}.`end` ;;
+  }
+
+  ## Unused Fields
 
   dimension: month {
     hidden: yes
@@ -263,5 +364,40 @@ view: bq_gsod_2000 {
     hidden: yes
     type: string
     sql: ${TABLE}.count_wdsp ;;
+  }
+
+  set: detail {
+    fields: [
+      usaf,
+      wban,
+      gwban,
+      name,
+      country,
+      state,
+      icao,
+      lat,
+      lon,
+      elev,
+      begin,
+      end,
+      station,
+      year,
+      windspeed,
+      dew_point,
+      flag_prcp,
+      max_wind_speed,
+      gust,
+      visibility,
+      rain_drizzle,
+      fog,
+      hail,
+      snow_ice_pellets,
+      thunder,
+      tornado_funnel_cloud,
+      sea_level_pressure,
+      snow,
+      mean_station_pressure,
+      temperature
+    ]
   }
 }
