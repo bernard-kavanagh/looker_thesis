@@ -29,8 +29,22 @@ explore: accidents {
     relationship: many_to_one
     sql_on: ${aircraft.aircraft_model_code} = ${aircraft_models.aircraft_model_code} ;;
   }
+  join: flights_by_day {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${aircraft.tail_num} = ${flights_by_day.tail_num} ;;
+  }
+  join: flights {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${aircraft.tail_num} = ${flights.tail_num} ;;
 }
-
+  join: airports {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${airports.code} = ${flights.origin} ;;
+}
+}
 explore: aircraft {
   join: ontime {
     type: left_outer
@@ -121,23 +135,6 @@ explore: flights {
     relationship: many_to_one
     sql_on: ${flights.origin} = ${airports.code} ;;
   }
-}
-
-explore: routes {
-  from: airports
-  join: flights_incoming {
-    from: flights
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${routes.code} = ${flights_incoming.destination} ;;
-  }
-  join: flights_outgoing {
-    from: flights
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${routes.code} = ${flights_incoming.origin} ;;
-  }
-  join: airports {}
 }
 
 explore: sessionsation {}

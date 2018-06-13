@@ -35,11 +35,19 @@ view: flights {
     sql: ${TABLE}.dep_delay ;;
   }
 
+  measure: total_dep_delay {
+    type: sum
+    sql: ${dep_delay} ;;
+  }
+
   dimension_group: dep {
     type: time
     timeframes: [
       raw,
       time,
+      hour,
+      hour_of_day,
+      day_of_week,
       date,
       week,
       month,

@@ -44,7 +44,7 @@ view: accidents {
 
   dimension: aircraft_category {
     type: string
-    sql: ${TABLE}.aircraft_category ;;
+    sql: CASE WHEN ${TABLE}.aircraft_category IS NULL THEN 'Other' ELSE ${TABLE}.aircraft_category END ;;
   }
 
   dimension: aircraft_damage {
@@ -118,6 +118,7 @@ view: accidents {
   }
 
   dimension: latitude {
+    hidden: yes
     type: string
     sql: ${TABLE}.latitude ;;
   }
@@ -128,6 +129,7 @@ view: accidents {
   }
 
   dimension: longitude {
+    hidden: yes
     type: string
     sql: ${TABLE}.longitude ;;
   }
@@ -188,8 +190,10 @@ view: accidents {
 
   dimension: purpose_of_flight {
     type: string
-    sql: ${TABLE}.purpose_of_flight ;;
+    sql: CASE  WHEN ${TABLE}.purpose_of_flight IS NULL THEN 'Other'
+      WHEN ${TABLE}.purpose_of_flight = 'Uknown' THEN 'Other' ELSE ${TABLE}.purpose_of_flight END;;
   }
+
 
   dimension: registration_number {
     type: string
@@ -213,7 +217,7 @@ view: accidents {
 
   measure: count {
     type: count
-    drill_fields: [id, airport_name, total_injuries, total_fatalities, geo_location]
+    drill_fields: [detail*]
   }
 
   measure: total_fatalities {
@@ -223,5 +227,33 @@ view: accidents {
   measure: total_injuries {
     type: sum
     sql: CAST(${number_of_minor_injuries} AS INT64) + CAST(${number_of_serious_injuries} AS INT64)  ;;
+  }
+  set: detail {
+    fields: [id ,
+      accident_number ,
+      air_carrier ,
+      aircraft_category ,
+      aircraft_damage ,
+      airport_code ,
+      airport_name ,
+      amateur_built ,
+      broad_phase_of_flight ,
+      country ,
+      engine_type ,
+      event_id ,
+      injury_severity ,
+      investigation_type ,
+      location ,
+      geo_location ,
+      make ,
+      model ,
+      number_of_engines ,
+      number_of_fatalities ,
+      number_of_minor_injuries ,
+      number_of_serious_injuries ,
+      number_of_uninjured ,
+      purpose_of_flight ,
+      total_fatalities ,
+      total_injuries ,]
   }
 }
