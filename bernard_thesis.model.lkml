@@ -14,10 +14,7 @@ datagroup: bernard_thesis_default_datagroup {
 persist_with: bernard_thesis_default_datagroup
 
 explore: accidents {
-  sql_always_where: ${event_year}> 1982 AND ${air_carrier} IS NOT NULL AND
-  ((((TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) >= (TIMESTAMP('2000-01-01 00:00:00'))
-  AND (TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) < (TIMESTAMP('2012-01-01 00:00:00')))))
-  AND (name LIKE '%AIRPORT%');;
+  sql_always_where: ${event_year} BETWEEN 2000 AND 2011 AND ${air_carrier} IS NOT NULL ;;
   join: aircraft {
     type: left_outer
     relationship: one_to_one

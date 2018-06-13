@@ -1,5 +1,4 @@
 view: weather_flattened {
-  label: "Weather"
   derived_table: {
     persist_for: "24 hours"
     sql: SELECT DISTINCT( usaf ),
@@ -38,7 +37,7 @@ FROM            `fh-bigquery.weather_gsod.stations2`     AS s
 INNER JOIN      `bigquery-public-data.noaa_gsod.gsod20*` AS g
 ON              g.wban = s.wban
 AND             g.stn = s.usaf
-WHERE           country = 'US'
+WHERE           country = 'US' AND NAME LIKE '%AIRPORT%'
  ;;
   }
   dimension: station_id {
