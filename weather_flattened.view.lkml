@@ -1,4 +1,5 @@
 view: weather_flattened {
+  label: "Weather"
   derived_table: {
     persist_for: "24 hours"
     sql: SELECT DISTINCT( usaf ),
