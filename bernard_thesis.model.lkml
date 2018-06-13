@@ -14,6 +14,7 @@ datagroup: bernard_thesis_default_datagroup {
 persist_with: bernard_thesis_default_datagroup
 
 explore: accidents {
+  sql_always_where: ${event_year}> 1982 ;;
   join: aircraft {
     type: left_outer
     relationship: one_to_one

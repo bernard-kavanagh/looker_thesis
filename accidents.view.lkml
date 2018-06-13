@@ -1,7 +1,6 @@
 view: accidents {
   sql_table_name: flightstats.accidents ;;
 
-
   parameter: airline {
     required_fields: [air_carrier]
     type: string
@@ -217,22 +216,34 @@ view: accidents {
 
   measure: count {
     type: count
-    drill_fields: [detail*]
+    drill_fields: [count,event_year, location]
   }
 
   measure: total_fatalities {
     type: sum_distinct
     sql: CAST(${number_of_fatalities} AS INT64) ;;
+    drill_fields: [air_carrier, event_year, broad_phase_of_flight,geo_location, total_fatalities,total_minor_injuries,total_serious_injuries,total_uninjured]
   }
-  measure: total_injuries {
+  measure: total_minor_injuries {
     type: sum
-    sql: CAST(${number_of_minor_injuries} AS INT64) + CAST(${number_of_serious_injuries} AS INT64)  ;;
+    sql: CAST(${number_of_minor_injuries} AS INT64) ;;
+    drill_fields: [air_carrier, event_year, broad_phase_of_flight,geo_location, total_fatalities,total_minor_injuries,total_serious_injuries,total_uninjured]
   }
+  measure: total_serious_injuries {
+    type: sum
+    sql:CAST(${number_of_serious_injuries} AS INT64);;
+   drill_fields: [air_carrier, event_year, broad_phase_of_flight,geo_location, total_fatalities,total_minor_injuries,total_serious_injuries,total_uninjured]
+  }
+  measure: total_uninjured {
+    type: sum
+    sql:CAST(${number_of_uninjured} AS INT64);;
+    drill_fields: [air_carrier, event_year, broad_phase_of_flight,geo_location, total_fatalities,total_minor_injuries,total_serious_injuries,total_uninjured]
+  }
+
   set: detail {
-    fields: [id ,
-      accident_number ,
+    fields: [
+      event_year,
       air_carrier ,
-      aircraft_category ,
       aircraft_damage ,
       airport_code ,
       airport_name ,
@@ -240,20 +251,12 @@ view: accidents {
       broad_phase_of_flight ,
       country ,
       engine_type ,
-      event_id ,
       injury_severity ,
       investigation_type ,
       location ,
-      geo_location ,
       make ,
-      model ,
-      number_of_engines ,
-      number_of_fatalities ,
-      number_of_minor_injuries ,
-      number_of_serious_injuries ,
-      number_of_uninjured ,
       purpose_of_flight ,
-      total_fatalities ,
-      total_injuries ,]
+      count
+     ]
   }
 }
