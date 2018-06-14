@@ -1,3 +1,4 @@
+include: "flights_by_day.view.lkml"
 view: flights_by_day {
   sql_table_name: flightstats.flights_by_day ;;
 
@@ -21,7 +22,7 @@ view: flights_by_day {
     type: average
     sql: ${dep_delay} ;;
     value_format: "0.##"
-    drill_fields: [carrier,count, count_delayed_flights]
+    drill_fields: [carrier,count, count_delayed_flights, airport.airport_location]
   }
 
 
