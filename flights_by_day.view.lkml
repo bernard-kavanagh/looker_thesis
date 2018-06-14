@@ -22,9 +22,12 @@ view: flights_by_day {
     type: average
     sql: ${dep_delay} ;;
     value_format: "0.##"
-    drill_fields: [airports.dep_hour_of_day, flights.count]
+#     drill_fields: [airports.dep_hour_of_day, flights.count]
+    link: {
+      label:  "Link to look"
+      url: "https://dcl.dev.looker.com/looks/827"
   }
-
+}
 
   dimension_group: arr {
     type: time
