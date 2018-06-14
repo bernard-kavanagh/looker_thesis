@@ -114,6 +114,12 @@ view: ontime {
     type: sum
     sql: ${dep_delay} ;;
   }
+
+  measure: average_delay {
+    type: average
+    sql: ${dep_delay} ;;
+    value_format: "0.##"
+  }
   dimension: idle_mins {
     type: number
     sql: TIMESTAMP_DIFF(${arr_raw}, ${dep_raw}, MINUTE);;

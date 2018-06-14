@@ -165,5 +165,5 @@ explore: weather_flattened {
   sql_always_where:
   ((((TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) >= (TIMESTAMP('2000-01-01 00:00:00'))
   AND (TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) < (TIMESTAMP('2012-01-01 00:00:00')))))
-  AND (name LIKE '%AIRPORT%');;
+  ;;
 }
