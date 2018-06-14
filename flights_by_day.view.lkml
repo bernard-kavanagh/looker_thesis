@@ -22,7 +22,7 @@ view: flights_by_day {
     type: average
     sql: ${dep_delay} ;;
     value_format: "0.##"
-    drill_fields: [carrier,count, count_delayed_flights, airport.airport_location]
+    drill_fields: [airports.dep_hour_of_day, flights.count]
   }
 
 

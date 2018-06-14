@@ -17,7 +17,7 @@ explore: accidents {
   sql_always_where: ${event_year} BETWEEN 2000 AND 2011 AND ${air_carrier} IS NOT NULL ;;
   join: aircraft {
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
     sql_on: ${accidents.registration_number} = ${aircraft.tail_num} ;;
   }
   join: carriers {
@@ -32,23 +32,23 @@ explore: accidents {
   }
   join: flights_by_day {
     type: left_outer
-    relationship: one_to_one
+    relationship: one_to_many
     sql_on: ${aircraft.tail_num} = ${flights_by_day.tail_num} ;;
   }
   join: flights {
     type: left_outer
-    relationship: one_to_one
+    relationship: one_to_many
     sql_on: ${aircraft.tail_num} = ${flights.tail_num} ;;
 }
   join: airports {
     type: left_outer
-    relationship: one_to_one
+    relationship: one_to_many
     sql_on: ${airports.code} = ${flights.origin} ;;
 }
   join: weather_flattened {
     type: full_outer
-    relationship: one_to_one
-    sql_on: ${accidents.event_date} = ${weather_flattened.weather_date} AND ${airports.state};;
+    relationship: one_to_many
+    sql_on: ${accidents.event_date} = ${weather_flattened.weather_date} AND ${airports.state} = ${weather_flattened.state};;
   }
 }
 explore: aircraft {

@@ -119,6 +119,11 @@ view: ontime {
     type: average
     sql: ${dep_delay} ;;
     value_format: "0.##"
+    link: {
+      url: "https://dcl.dev.looker.com/looks/827"
+      icon_url: "Blah"
+      }
+#       drill_fields: [average_delay, origin]
   }
   dimension: idle_mins {
     type: number
