@@ -1,12 +1,15 @@
 view: user_facts {
   derived_table: {
     sql: SELECT  user_id,
-        SUM(sale_price) AS total_spent,
-        COUNT(DISTINCT o.id) AS total_orders,
+        o.order_id AS order_id,
+        o.id AS order_item_id,
+        SUM(o.sale_price) AS total_spend,
+        COUNT(DISTINCT o.order_id) AS total_orders,
+        COUNT(o.id) AS number_of_order_items,
         status,
         city, state, country, zip
 FROM order_items o
-JOIN orders ON orders.id = o.order_id
+LEFT JOIN orders ON orders.id = o.order_id
 JOIN users ON users.id = orders.user_id
 GROUP BY 1
  ;;
@@ -17,19 +20,44 @@ GROUP BY 1
     drill_fields: [detail*]
   }
 
+  dimension: has_user_moved {
+    type: yesno
+    sql: ${address}  ;;
+  }
+
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
   }
 
-  dimension: total_spent {
+  dimension: order_id {
     type: number
-    sql: ${TABLE}.total_spent ;;
+    sql: ${TABLE}.order_id ;;
+  }
+
+  dimension: order_item_id {
+    type: number
+    sql: ${TABLE}.order_item_id ;;
+  }
+
+  dimension: number_of_order_items {
+    type:  number
+    sql: ${TABLE}.number_of_order_items ;;
+  }
+
+  dimension: total_spend {
+    type: number
+    sql: ${TABLE}.total_spend ;;
   }
 
   dimension: total_orders {
     type: number
     sql: ${TABLE}.total_orders ;;
+  }
+
+  dimension: number_of_items {
+    type: number
+    sql: ${TABLE}.number_of_items ;;
   }
 
   dimension: status {
@@ -66,10 +94,54 @@ GROUP BY 1
     sql: CONCAT(${city},","," ",${state},","," ",${country},","," ", ${zip}) ;;
   }
 
+  measure: average_spend {
+    type: average
+    sql: ${total_spend} ;;
+    value_format_name: usd_0
+  }
+
+  measure: amount_of_completed_orders {
+    type: count_distinct
+    sql: ${order_id} ;;
+    filters: {
+      field: status
+      value: "complete"
+    }
+  }
+
+  measure: amount_of_pending_orders {
+    type: count_distinct
+    sql:${order_id};;
+    filters: {
+      field: status
+      value: "pending"
+    }
+  }
+
+  measure: total_lifetime_orders {
+    type: count_distinct
+    sql: ${order_id} ;;
+  }
+  measure: total_lifetime_revenue {
+    type: sum
+    sql: ${total_spend} ;;
+    value_format_name: "usd_0"
+  }
+
+  measure: average_number_of_order_items{
+    type: average
+    sql: ${number_of_order_items} ;;
+  }
+
+  measure: address_count{
+    type: count_distinct
+    sql: ${address} ;;
+  }
+
   set: detail {
     fields: [
       user_id,
-      total_spent,
+      total_spend,
       total_orders,
       status,
       city,
