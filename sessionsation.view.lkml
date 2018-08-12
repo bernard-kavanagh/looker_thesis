@@ -1,4 +1,3 @@
-connection: "looker-dcl-dev"
 view: sessionsation {
   derived_table: {
     persist_for: "1 hour"

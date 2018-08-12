@@ -4,7 +4,7 @@ connection: "looker-dcl-dev"
 include: "*.view"
 
 # include all the dashboards
-include: "*.dashboard"
+
 
 datagroup: bernard_thesis_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
@@ -167,3 +167,4 @@ explore: weather_flattened {
   AND (TIMESTAMP(concat(weather_flattened.year,'-',weather_flattened.mo,'-',weather_flattened.da)) ) < (TIMESTAMP('2012-01-01 00:00:00')))))
   ;;
 }
+explore: bus_max_load {}
