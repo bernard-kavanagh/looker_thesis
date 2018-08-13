@@ -97,7 +97,7 @@ GROUP BY 1
   measure: average_spend {
     type: average
     sql: ${total_spend} ;;
-    value_format_name: usd_0
+    value_format_name: usd
   }
 
   measure: amount_of_completed_orders {
