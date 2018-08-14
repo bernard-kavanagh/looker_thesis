@@ -34,6 +34,7 @@ view: user_facts {
 
   measure: count {
     type: count
+    label: "Count"
     drill_fields: [detail*]
   }
 
