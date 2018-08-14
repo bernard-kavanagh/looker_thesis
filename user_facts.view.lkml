@@ -1,18 +1,35 @@
 view: user_facts {
   derived_table: {
-    sql: SELECT  user_id,
-        o.order_id AS order_id,
-        o.id AS order_item_id,
-        SUM(o.sale_price) AS total_spend,
-        COUNT(DISTINCT o.order_id) AS total_orders,
-        COUNT(o.id) AS number_of_order_items,
-        status,
-        city, state, country, zip
-FROM order_items o
-LEFT JOIN orders ON orders.id = o.order_id
-JOIN users ON users.id = orders.user_id
-GROUP BY 1
- ;;
+    sql: SELECT
+          user_id AS user_id
+          , CONCAT(city,","," ",state,","," ",country,","," ",zip)  AS address
+          , orders.id AS order_id
+          , COUNT(DISTINCT orders.id) AS total_orders
+          , COUNT(DISTINCT order_items.id) AS total_items_ordered
+          , order_items.sale_price AS item_sale_price
+          , SUM(order_items.sale_price) AS total_amount_spent
+          , AVG(order_items.sale_price) AS average_amount_orders
+          , AVG(order_items.id) AS average_items_ordered
+          , orders.created_at AS order_created_date
+          , order_items.id AS order_item_id
+          , status
+          , MAX(orders.created_at) as most_recent_purchase_at
+          , MIN(orders.created_at) as first_purchase_at
+      FROM demo_db.orders
+      JOIN users ON demo_db.orders.user_id = users.id
+      JOIN demo_db.order_items ON demo_db.order_items.order_id = demo_db.orders.id
+      GROUP BY user_id
+
+
+      -- a. A yesno reflecting if they’ve moved (have multiple addresses on file) - dimension
+      -- b. The total amount they’ve spent - total_amount_spent
+      -- c. The number of orders they’ve placed - total_orders
+      -- d. The average number of items per order - average_items_ordered
+      -- e. The average Price of items ordered - average_item_price
+      -- f.  Amount of completed orders - filtered measure
+      -- g. Amount of pending orders - filtered measure
+      -- g. Any other fun user facts you can think of - most_recent/first_purchase
+       ;;
   }
 
   measure: count {
@@ -20,14 +37,14 @@ GROUP BY 1
     drill_fields: [detail*]
   }
 
-  dimension: has_user_moved {
-    type: yesno
-    sql: ${address}  ;;
-  }
-
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
+  }
+
+  dimension: address {
+    type: string
+    sql: ${TABLE}.address ;;
   }
 
   dimension: order_id {
@@ -35,29 +52,44 @@ GROUP BY 1
     sql: ${TABLE}.order_id ;;
   }
 
-  dimension: order_item_id {
-    type: number
-    sql: ${TABLE}.order_item_id ;;
-  }
-
-  dimension: number_of_order_items {
-    type:  number
-    sql: ${TABLE}.number_of_order_items ;;
-  }
-
-  dimension: total_spend {
-    type: number
-    sql: ${TABLE}.total_spend ;;
-  }
-
   dimension: total_orders {
     type: number
     sql: ${TABLE}.total_orders ;;
   }
 
-  dimension: number_of_items {
+  dimension: total_items_ordered {
     type: number
-    sql: ${TABLE}.number_of_items ;;
+    sql: ${TABLE}.total_items_ordered ;;
+  }
+
+  dimension: item_sale_price {
+    type: number
+    sql: ${TABLE}.item_sale_price ;;
+  }
+
+  dimension: total_amount_spent {
+    type: number
+    sql: ${TABLE}.total_amount_spent ;;
+  }
+
+  dimension: average_amount_orders {
+    type: number
+    sql: ${TABLE}.average_amount_orders ;;
+  }
+
+  dimension: average_items_ordered {
+    type: number
+    sql: ${TABLE}.average_items_ordered ;;
+  }
+
+  dimension_group: order_created_date {
+    type: time
+    sql: ${TABLE}.order_created_date ;;
+  }
+
+  dimension: order_item_id {
+    type: number
+    sql: ${TABLE}.order_item_id ;;
   }
 
   dimension: status {
@@ -65,38 +97,19 @@ GROUP BY 1
     sql: ${TABLE}.status ;;
   }
 
-  dimension: city {
-    group_label: "Address Components"
-    type: string
-    sql: ${TABLE}.city ;;
+  dimension_group: most_recent_purchase_at {
+    type: time
+    sql: ${TABLE}.most_recent_purchase_at ;;
   }
 
-  dimension: state {
-    group_label: "Address Components"
-    type: string
-    sql: ${TABLE}.state ;;
-  }
-
-  dimension: country {
-    group_label: "Address Components"
-    type: string
-    sql: ${TABLE}.country ;;
-  }
-
-  dimension: zip {
-    group_label: "Address Components"
-    type: number
-    sql: ${TABLE}.zip ;;
-  }
-
-  dimension: address {
-    type: string
-    sql: CONCAT(${city},","," ",${state},","," ",${country},","," ", ${zip}) ;;
+  dimension_group: first_purchase_at {
+    type: time
+    sql: ${TABLE}.first_purchase_at ;;
   }
 
   measure: average_spend {
     type: average
-    sql: ${total_spend} ;;
+    sql: ${total_amount_spent} ;;
     value_format_name: usd
   }
 
@@ -122,16 +135,6 @@ GROUP BY 1
     type: count_distinct
     sql: ${order_id} ;;
   }
-  measure: total_lifetime_revenue {
-    type: sum
-    sql: ${total_spend} ;;
-    value_format_name: "usd_0"
-  }
-
-  measure: average_number_of_order_items{
-    type: average
-    sql: ${number_of_order_items} ;;
-  }
 
   measure: address_count{
     type: count_distinct
@@ -141,13 +144,10 @@ GROUP BY 1
   set: detail {
     fields: [
       user_id,
-      total_spend,
+      total_amount_spent,
       total_orders,
       status,
-      city,
-      state,
-      country,
-      zip
+      address
     ]
   }
 }
