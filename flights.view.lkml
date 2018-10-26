@@ -60,6 +60,12 @@ view: flights {
   dimension: destination {
     type: string
     sql: ${TABLE}.destination ;;
+    link: {
+      label: "A new label"
+      url: "http://www.google.com/search?q={{ value }}"
+      icon_url: "http://google.com/favicon.ico"
+    }
+
   }
 
   dimension: distance {

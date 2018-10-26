@@ -39,6 +39,7 @@ view: accidents {
   dimension: air_carrier {
     type: string
     sql: ${TABLE}.air_carrier ;;
+    html:  <p align="center">{{ value }}</p>;;
   }
 
   dimension: aircraft_category {
@@ -71,10 +72,16 @@ view: accidents {
     sql: ${TABLE}.broad_phase_of_flight ;;
   }
 
+  dimension: is_landing {
+    type: yesno
+    sql: ${broad_phase_of_flight} = "LANDING" ;;
+  }
+
   dimension: country {
     type: string
     map_layer_name: countries
     sql: ${TABLE}.country ;;
+    drill_fields: [detail*]
   }
 
   dimension: engine_type {
@@ -88,12 +95,57 @@ view: accidents {
       raw,
       time,
       date,
+      day_of_week,
+      day_of_week_index,
+      day_of_year,
       week,
+      week_of_year,
       month,
+      month_name,
       quarter,
       year
     ]
     sql: ${TABLE}.event_date ;;
+  }
+
+  dimension: week_test {
+    sql: CAST(${event_week_of_year} AS STRING) ;;
+  }
+
+  measure: last_day_of_month_pivot {
+    type: string
+    sql: MAX(DATE_ADD(s,-1,DATE_ADD(mm, DATE_DIFF(m,0,${event_date})+1,0))) ;;
+  }
+
+  dimension: in_date_range {
+    type: yesno
+    hidden: yes
+    sql: ${event_date} BETWEEN {% date_start event_date %} AND {% date_end event_date %} ;;
+  }
+
+  dimension: last_day_year {
+    type: yesno
+    sql: ${event_day_of_year} = 365 ;;
+  }
+
+  dimension: day_name {
+    sql: CASE WHEN ${event_day_of_week_index} = 0 THEN 'Sunday'
+              WHEN ${event_day_of_week_index} = 1 THEN 'Monday'
+              WHEN ${event_day_of_week_index} = 2 THEN 'Tuesday'
+              WHEN ${event_day_of_week_index} = 3 THEN 'Wednesday'
+              WHEN ${event_day_of_week_index} = 4 THEN 'Thursday'
+              WHEN ${event_day_of_week_index} = 5 THEN 'Friday'
+              WHEN ${event_day_of_week_index} = 6 THEN 'Saturday'
+              ELSE null END;;
+  }
+  measure: day_count {
+    type: count_distinct
+    sql: ${day_name} ;;
+  }
+
+  measure: percent_of_total {
+    type:  percent_of_total
+    sql: ${count} ;;
   }
 
   dimension: event_id {
@@ -179,6 +231,7 @@ view: accidents {
       raw,
       time,
       date,
+      day_of_week,
       week,
       month,
       quarter,
@@ -214,6 +267,12 @@ view: accidents {
     sql: ${TABLE}.weather_condition ;;
   }
 
+  dimension: count_days {
+    type: number
+    sql: date_diff(day, date_add(day, 1-day(@date), @date),
+              date_add(month, 1, date_add(day, 1-day(@date), @date))) ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [count,event_year, location, airport_name]
@@ -234,10 +293,13 @@ view: accidents {
     sql:CAST(${number_of_serious_injuries} AS INT64);;
    drill_fields: [air_carrier, event_year, broad_phase_of_flight,geo_location, total_fatalities,total_minor_injuries,total_serious_injuries,total_uninjured]
   }
+#   html parameter below allow maintainance of drill links:
   measure: total_uninjured {
     type: sum
     sql:CAST(${number_of_uninjured} AS INT64);;
     drill_fields: [air_carrier, event_year, broad_phase_of_flight,geo_location, total_fatalities,total_minor_injuries,total_serious_injuries,total_uninjured]
+    html: <a href="#drillmenu" target="_self"><span style="font-weight:bold">{{ rendered_value }}</span></a>;;
+    tags: ["This is a test tag"]
   }
 
   set: detail {

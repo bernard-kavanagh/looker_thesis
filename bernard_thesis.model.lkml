@@ -13,6 +13,7 @@ datagroup: bernard_thesis_default_datagroup {
 
 persist_with: bernard_thesis_default_datagroup
 
+
 explore: accidents {
   sql_always_where: ${event_year} BETWEEN 2000 AND 2011 AND ${air_carrier} IS NOT NULL ;;
   join: aircraft {
