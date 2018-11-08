@@ -2,7 +2,6 @@ view: user_facts {
   derived_table: {
     sql: SELECT
           user_id AS user_id
-          , CONCAT(city,","," ",state,","," ",country,","," ",zip)  AS address
           , orders.id AS order_id
           , COUNT(DISTINCT orders.id) AS total_orders
           , COUNT(DISTINCT order_items.id) AS total_items_ordered
@@ -18,18 +17,14 @@ view: user_facts {
       FROM demo_db.orders
       JOIN users ON demo_db.orders.user_id = users.id
       JOIN demo_db.order_items ON demo_db.order_items.order_id = demo_db.orders.id
+      WHERE {% condition templated_example %} orders.created_at {% endcondition%}
       GROUP BY user_id
 
-
-      -- a. A yesno reflecting if they’ve moved (have multiple addresses on file) - dimension
-      -- b. The total amount they’ve spent - total_amount_spent
-      -- c. The number of orders they’ve placed - total_orders
-      -- d. The average number of items per order - average_items_ordered
-      -- e. The average Price of items ordered - average_item_price
-      -- f.  Amount of completed orders - filtered measure
-      -- g. Amount of pending orders - filtered measure
-      -- g. Any other fun user facts you can think of - most_recent/first_purchase
        ;;
+  }
+
+  filter: templated_example {
+    type: date
   }
 
   measure: count {
