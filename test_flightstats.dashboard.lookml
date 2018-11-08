@@ -1,6 +1,7 @@
 
 
 - dashboard: flightstats__safety__delays
+  show_applied_filters: false
   title: test - Safety & Delays
   layout: newspaper
   query_timezone: query_saved
