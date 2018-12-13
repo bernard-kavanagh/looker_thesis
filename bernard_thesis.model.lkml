@@ -4,7 +4,7 @@ connection: "looker-dcl-dev"
 include: "*.view"
 
 # include all the dashboards
-# include: "*.dashboard"
+include: "*.dashboard"
 
 datagroup: bernard_thesis_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;

@@ -1118,7 +1118,7 @@
     col: 0
     width: 24
     height: 7
-  - name: Sign-ins is under construction.
+  - name: Sign-ins is under construction
     type: text
     title_text: Sign-ins is under construction.
     subtitle_text: ''
