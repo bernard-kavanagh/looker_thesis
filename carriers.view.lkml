@@ -10,7 +10,16 @@ view: carriers {
   dimension: code_html {
     type: string
     sql: ${TABLE}.code ;;
-    html:  <div style="background-color: lightgreen">{{ value }}</div> ;;
+    html: {% if value == '1. [0-7]' %}
+    <p style="color: black; background-color: lightblue; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value == '2. [8-14]' %}
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value == '3. [15-29]' %}
+    <p style="color: black; background-color: yellow; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% endif %}
+    ;;
   }
 
   dimension: name {
