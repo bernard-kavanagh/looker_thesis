@@ -17,7 +17,7 @@ view: flights {
       quarter,
       year
     ]
-    sql: ${TABLE}.arr_time ;;
+    sql: CAST(${TABLE}.arr_time AS DATE) ;;
   }
 
   dimension: cancelled {
