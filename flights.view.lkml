@@ -17,7 +17,10 @@ view: flights {
       quarter,
       year
     ]
-    sql: CAST(${TABLE}.arr_time AS DATE) ;;
+   datatype: date
+
+    # sql:PARSE_DATE('%Y%m%d', FORMAT('%08d',${TABLE}.MYDATE));;
+    sql: PARSE_DATE ('%Y%m%d', FORMAT('%08d',${TABLE}.ARR_TIME));;
   }
 
   dimension: cancelled {
